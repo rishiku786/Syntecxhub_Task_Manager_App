@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+let baseApiUrl = import.meta.env.VITE_API_URL || '/api';
+if (baseApiUrl.endsWith('/')) baseApiUrl = baseApiUrl.slice(0, -1);
+if (baseApiUrl.startsWith('http') && !baseApiUrl.endsWith('/api')) {
+  baseApiUrl += '/api';
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: baseApiUrl,
   withCredentials: true
 });
 
@@ -65,8 +71,7 @@ api.interceptors.response.use(
 
       try {
         // Call refresh endpoint on server (cookie sent automatically)
-        // Note: Using window.location.origin to support standard proxying path
-        const refreshUrl = `${import.meta.env.VITE_API_URL || ''}/api/auth/refresh`;
+        const refreshUrl = `${baseApiUrl}/auth/refresh`;
         const response = await axios.post(refreshUrl, {}, { withCredentials: true });
         const { token } = response.data;
         
