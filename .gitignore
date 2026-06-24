@@ -18,3 +18,9 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Agent/Planning files
+implementation_plan*
+task.md
+walkthrough.md
+
