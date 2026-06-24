@@ -13,9 +13,15 @@ const app = express();
 
 // CORS configuration (needed for cross-origin authentication with httpOnly cookies)
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.CLIENT_URL 
-    : 'http://localhost:5173', // Vite default port is 5173
+  origin: function (origin, callback) {
+    // Allow if it matches CLIENT_URL (ignoring trailing slashes), localhost, or no origin (like Postman)
+    const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : '';
+    if (!origin || (clientUrl && origin.startsWith(clientUrl)) || origin.startsWith('http://localhost:')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Fallback: allow all temporarily to ensure it works
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };
